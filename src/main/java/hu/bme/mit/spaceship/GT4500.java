@@ -42,37 +42,36 @@ public class GT4500 implements SpaceShip {
     boolean firingSuccess = false;
 
     if(firingMode==SINGLE) {
-      if (wasPrimaryFiredLast) {
+
         // try to fire the secondary first
-        if (!secondaryTorpedoStore.isEmpty()) {
+        if (primaryFiredLastAndSecondaryNotEmpty()) {
           firingSuccess = secondaryTorpedoStore.fire(1);
           wasPrimaryFiredLast = false;
-        } else {
+        }
+        if(primaryFiredLastAndSecondaryEmpty()){
           // although primary was fired last time, but the secondary is empty
           // thus try to fire primary again
           if (!primaryTorpedoStore.isEmpty()) {
             firingSuccess = primaryTorpedoStore.fire(1);
             wasPrimaryFiredLast = true;
           }
-
           // if both of the stores are empty, nothing can be done, return failure
-        }
-      } else {
+
+      }
+
         // try to fire the primary first
-        if (!primaryTorpedoStore.isEmpty()) {
+        if (secondaryFiredLastAndPrimaryNotEmpty()) {
           firingSuccess = primaryTorpedoStore.fire(1);
           wasPrimaryFiredLast = true;
-        } else {
+        }
+        if(secondaryFiredLastAndPrimaryEmpty()){
           // although secondary was fired last time, but primary is empty
           // thus try to fire secondary again
-          if (!secondaryTorpedoStore.isEmpty()) {
             firingSuccess = secondaryTorpedoStore.fire(1);
             wasPrimaryFiredLast = false;
-          }
-
           // if both of the stores are empty, nothing can be done, return failure
         }
-      }
+
     }
 
     if(firingMode==ALL&&(!primaryTorpedoStore.isEmpty() && !secondaryTorpedoStore.isEmpty())&&
@@ -83,11 +82,26 @@ public class GT4500 implements SpaceShip {
           firingSuccess = true;
         }
 
-
-
-
-
     return firingSuccess;
   }
+
+  public boolean primaryFiredLastAndSecondaryEmpty(){
+    return (wasPrimaryFiredLast&&secondaryTorpedoStore.isEmpty());
+
+  }
+
+  public boolean primaryFiredLastAndSecondaryNotEmpty(){
+    return (wasPrimaryFiredLast&&!secondaryTorpedoStore.isEmpty());
+
+  }
+  public boolean secondaryFiredLastAndPrimaryNotEmpty(){
+    return (!wasPrimaryFiredLast&&!secondaryTorpedoStore.isEmpty());
+
+  }
+  public boolean secondaryFiredLastAndPrimaryEmpty(){
+    return (!wasPrimaryFiredLast&&secondaryTorpedoStore.isEmpty());
+
+  }
+
 
 }
